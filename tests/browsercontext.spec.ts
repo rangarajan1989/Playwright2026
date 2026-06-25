@@ -8,7 +8,7 @@ import {
 import { channel } from "node:diagnostics_channel";
 
 test("Browser Context", async () => {
-  let browser: Browser = await chromium.launch({ headless: false });
+  let browser: Browser = await chromium.launch({ headless: true });
 
   let browserContext1: BrowserContext = await browser.newContext();
   let browserContext2: BrowserContext = await browser.newContext();

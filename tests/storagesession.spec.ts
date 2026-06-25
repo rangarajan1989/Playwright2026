@@ -1,7 +1,7 @@
 import test, { chromium, Page } from "@playwright/test";
 
 test("session storage", async () => {
-  let browser = await chromium.launch({ headless: false, channel: "chrome" });
+  let browser = await chromium.launch({ headless: true, channel: "chrome" });
   let page = await browser.newPage();
   await page.goto(
     "https://naveenautomationlabs.com/opencart/index.php?route=account/login",
