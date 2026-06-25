@@ -1,6 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, chromium } from "@playwright/test";
 
-test("orange test", async ({ page }) => {
+test("orange test", async () => {
+  let browser = await chromium.launch({ headless: true, channel: "chrome" });
+  let page = await browser.newPage();
   await page.goto("https://orangehrm.com/contact-sales");
   await page.getByRole("textbox", { name: "Full Name" }).click();
   await page.getByRole("textbox", { name: "Full Name" }).fill("Rangarajan");

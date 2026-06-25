@@ -1,7 +1,7 @@
 import test, { chromium, Page } from "@playwright/test";
 
 test("Browser context", async () => {
-  let browser = await chromium.launch({ headless: false, channel: "chrome" });
+  let browser = await chromium.launch({ headless: true, channel: "chrome" });
   let context1 = await browser.newContext();
   let context2 = await browser.newContext();
   let page1 = await context1.newPage();
