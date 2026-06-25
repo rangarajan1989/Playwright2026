@@ -20,5 +20,7 @@ let page: Page;
   page = await context.newPage();
   let userName = "admin";
   let password = "admin";
-  page.goto("https://admin:admin@the-internet.herokuapp.com/basic_auth");
+  page.goto(
+    "https://${userName}:${password}@the-internet.herokuapp.com/basic_auth",
+  );
 })();
