@@ -28,7 +28,7 @@ jobs:
 
       # === NEW EMAIL NOTIFICATION STEP ===
       - name: Send Email Notification on Failure
-        if: failure() # This ensures the email is ONLY sent if the "Run Playwright tests" step fails
+        if: always() # This ensures the email is ONLY sent if the "Run Playwright tests" step fails
         uses: dawidd6/action-send-mail@v3
         with:
           # SMTP Server settings (Example using Gmail)
