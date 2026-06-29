@@ -1,36 +1,44 @@
 pipeline {
-    agent {
-        docker {
-            image 'mcr.microsoft.com/playwright:v1.49.0-noble' // Match this to your project's Playwright version
-            args '--entrypoint='
-        }
+    agent any 
+    
+    tools {
+        // Tells Jenkins to use your locally configured Node.js installation
+        nodejs 'NodeJS-20' 
     }
 
     stages {
-        stage('Checkout') {
+        stage('Check Version') {
             steps {
-                checkout scm
+                bat 'node -v'
+                bat 'npm -v'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Node Dependencies') {
             steps {
-                // Installs your node modules (including Playwright)
-                sh 'npm ci'
+                // Installs the node modules required for your project
+                bat 'npm ci'
+            }
+        }
+
+        stage('Install Playwright Browsers') {
+            steps {
+                // Installs the necessary browser binaries (Chromium, Firefox, WebKit) locally
+                bat 'npx playwright install --with-deps'
             }
         }
 
         stage('Run Playwright Tests') {
             steps {
-                // Executes the tests. The CI=true env variable ensures proper logging
-                sh 'CI=true npx playwright test'
+                // Sets the CI environment variable to true and runs the tests
+                bat 'set CI=true && npx playwright test'
             }
         }
     }
 
     post {
         always {
-            // Archives the HTML report and screenshots so you can view them in Jenkins
+            // Publishes the HTML report so you can view it directly in Jenkins
             publishHTML(target: [
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
@@ -38,9 +46,6 @@ pipeline {
                 reportFiles: 'index.html',
                 reportName: 'Playwright HTML Report'
             ])
-            
-            // Optional: If you generate JUnit XML reports, uncomment the line below
-            // junit 'playwright-report/results.xml'
         }
     }
 }
