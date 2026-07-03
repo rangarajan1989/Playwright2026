@@ -4,21 +4,32 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
+
       - name: Install dependencies
         run: npm ci
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
+
+      # === 🚀 UPDATED: INJECT BROWSERSTACK CONFIG & SECRETS ===
+      - name: Run Playwright tests on BrowserStack
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+        run: npx playwright test --config=playwright.config.browserstack.ts
+
+      # === 📦 UPLOAD ARTIFACT TO GITHUB WORKFLOW ===
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -26,24 +37,32 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      # === NEW EMAIL NOTIFICATION STEP ===
-      - name: Send Email Notification on Failure
-        if: always() # This ensures the email is ONLY sent if the "Run Playwright tests" step fails
+      # === 🤐 ZIP THE REPORT LOGS FOR EMAIL DELIVERY ===
+      - name: Zip Playwright Report
+        if: always()
+        run: zip -r playwright-report.zip playwright-report/
+
+      # === 📨 EMAIL NOTIFICATION STEP ===
+      - name: Send Email Notification
+        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
-          # SMTP Server settings (Example using Gmail)
           server_address: smtp.gmail.com
           server_port: 465
-          # Securely fetch credentials from GitHub Secrets
+          secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
 
-          # Email Content
-          subject: "❌ Playwright Test Failure: ${{ github.repository }}"
-          to: rangarajanragavan@gmail.com # Add your target emails here
-          from: GitHub Actions Auditor <your-sender-email@gmail.com>
+          subject: "${{ job.status == 'success' && '✅' || '❌' }} Playwright Test Result: ${{ job.status }} (${{ github.repository }})"
+          to: rangarajanragavan@gmail.com
+          from: GitHub Actions Auditor <rangarajanragavan@gmail.com>
           body: |
-            Playwright tests have failed on the branch "${{ github.ref_name }}".
+            Playwright tests completed on BrowserStack with status: "${{ job.status }}".
 
-            You can view the run and download the report here:
+            Branch: "${{ github.ref_name }}"
+            Commit: "${{ github.event.head_commit.message }}"
+
+            You can view the run execution history and download reports here:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          attachments: playwright-report.zip
