@@ -17,6 +17,7 @@ const caps = {
 
 export default defineConfig({
   testDir: "./tests",
+  reporter: [["html", { open: "never" }]],
   use: {
     connectOptions: {
       wsEndpoint: `wss://cdp.browserstack.com/playwright?caps=${encodeURIComponent(JSON.stringify(caps))}`,
