@@ -27,7 +27,7 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-        run: npx playwright test --config=playwright.config.browserstack.ts
+        run: npx playwright test --config=playwright.config.browser.ts
 
       # === 📦 UPLOAD ARTIFACT TO GITHUB WORKFLOW ===
       - uses: actions/upload-artifact@v4
