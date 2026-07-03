@@ -1,7 +1,7 @@
-import { test as base } from "@playwright/test";
+import { test as base, type Page } from "@playwright/test";
 
 type MyFixture = {
-  loginFixture: void;
+  loginFixture: Page;
 };
 
 export const test = base.extend<MyFixture>({
@@ -15,7 +15,7 @@ export const test = base.extend<MyFixture>({
       .fill("raghu@gmail.com");
     await page.getByRole("textbox", { name: "Password" }).fill("Light@1234");
     await page.getByRole("button", { name: "Login" }).click();
-    await use();
+    await use(page);
     console.log(`Logged off`);
   },
 });
