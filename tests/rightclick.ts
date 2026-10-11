@@ -17,4 +17,5 @@ let page: Page;
   console.log(options);
   await page.getByText("Copy", { exact: true }).click();
   console.log(options);
+  console.log(options);
 })();
