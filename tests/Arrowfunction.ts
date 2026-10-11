@@ -19,3 +19,6 @@ async function rowCount(page: Page): Promise<number> {
 async function rowCountasif(page: Page): Promise<number> {
   return page.locator(".row").count();
 }
+async function rowCountasifF(page: Page): Promise<number> {
+  return page.locator(".row").count();
+}
