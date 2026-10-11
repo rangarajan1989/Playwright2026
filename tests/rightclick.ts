@@ -16,4 +16,5 @@ let page: Page;
     .allInnerTexts();
   console.log(options);
   await page.getByText("Copy", { exact: true }).click();
+  console.log(options);
 })();
