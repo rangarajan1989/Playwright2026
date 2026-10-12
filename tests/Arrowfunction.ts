@@ -19,3 +19,7 @@ async function rowCount(page: Page): Promise<number> {
 async function rowCountasif(page: Page): Promise<number> {
   return page.locator(".row").count();
 }
+const add = (a: number, b: number): number => {
+  return a + b;
+};
+console.log(add(2, 3));
