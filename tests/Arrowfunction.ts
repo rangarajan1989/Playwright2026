@@ -11,11 +11,3 @@ interface User {
   readonly createdAt: Date;
 }
 type Role = "sdet" | "admin" | "viewer";
-
-async function rowCount(page: Page): Promise<number> {
-  return page.locator(".row").count();
-}
-
-async function rowCountasif(page: Page): Promise<number> {
-  return page.locator(".row").count();
-}
